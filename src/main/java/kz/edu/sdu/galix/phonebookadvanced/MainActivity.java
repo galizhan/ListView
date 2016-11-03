@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db;
     SimpleAdapter sa;
     ArrayList<String> data;
+    Long changableId;
     final int MENU_UPDATE = 1;
     final int MENU_DELETE = 2;
 
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 String name = c.getString(c.getColumnIndex("name"));
                 String phone = c.getString(c.getColumnIndex("number"));
                 Map<String, String> map = new HashMap<>();
-                map.put("name",name);
+                map.put("name",id+". "+name);
                 map.put("number",phone);
                 dataSA.add(map);
                 Log.d("name",name+" "+phone);
@@ -89,10 +90,10 @@ public class MainActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu,
                                     View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        ListView ll = (ListView)v;
 
-        String contactStr = ((TextView)v).getText().toString();
+        String contactStr = ((TextView)ll.findViewById(R.id.tv1)).getText().toString();
         changableId = Long.parseLong(contactStr.split("\\.")[0]);
-
         menu.add(0, MENU_UPDATE, 0, "Update");
         menu.add(0, MENU_DELETE, 0, "Delete");
 
@@ -100,18 +101,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =
+                (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        TextView tv1 = (TextView)info.targetView.findViewById(R.id.tv1);
         switch (item.getItemId()){
             case MENU_UPDATE:
                 Intent i = new Intent(this, CreateActivity.class);
                 i.putExtra("action", "update");
-                i.putExtra("id", changableId);
+                i.putExtra("id", info.id);
                 startActivity(i);
                 break;
             case MENU_DELETE:
                 db.delete("contacts", "_id=?", new String[]{changableId+""});
-                refresh(null);
+                Log.d("id_info",""+changableId);
+                refresh();
+                sa.notifyDataSetChanged();
                 break;
         }
+
         return super.onContextItemSelected(item);
     }
 

@@ -29,6 +29,7 @@ public class CreateActivity extends AppCompatActivity {
 
         if(action.equals("update")){
             id = intent.getLongExtra("id",0);
+            Log.d("id2",""+id);
             Cursor c = db.query("contacts", null, "_id=?",
                     new String[]{id+""}, null, null, null);
             if(c.moveToFirst()){
