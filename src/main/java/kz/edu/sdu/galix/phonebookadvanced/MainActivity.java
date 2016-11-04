@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     Long changableId;
     final int MENU_UPDATE = 1;
     final int MENU_DELETE = 2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             case MENU_UPDATE:
                 Intent i = new Intent(this, CreateActivity.class);
                 i.putExtra("action", "update");
-                i.putExtra("id", info.id);
+                i.putExtra("id", changableId);
                 startActivity(i);
                 break;
             case MENU_DELETE:
